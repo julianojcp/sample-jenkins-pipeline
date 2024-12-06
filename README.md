@@ -20,8 +20,19 @@ docker exec -it -u root jenkins apt install rsync nano
 
 # Pipeline 1
 
-Realiza uma sequencia de passos para atualizar um sistema hospedado em TARGET, copiando os novos dados de SOURCE
+Jenkinsfile
+
+Realiza uma sequencia de passos para atualizar um sistema hospedado no IIS em TARGET, deixando o sistema Offline, copiando os novos dados de SOURCE e voltado o sistema para Online.
 
 # Pipeline 2
 
 <implementar os conceitos de CI/CD automatizado do github>
+
+# Pipeline 2
+
+Jenkinsfile.CopyDeploy
+
+Realiza uma comparação prévia da diferença de arquivos, para copiar no passo seguinte apenas os arquivos listados anteriormente.
+
+Objetivo: reduzir o tempo de deploy
+
