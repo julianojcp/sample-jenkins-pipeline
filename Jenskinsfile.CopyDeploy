@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+    
+    stages {
+        
+        stage('Gera lista de arquivos do SOURCE para TARGET') {
+            steps {
+                sh 'rsync --dry-run -avz $SOURCE/ $TARGET/ | head --lines=-3 | tail --lines=+3 > files.txt'
+            }
+        }
+
+        stage('Copia arquivos do SOURCE para TARGET') {
+            steps {
+                retry(3) {
+                    sh 'rsync -av --include-from=files.txt --exclude="*" $SOURCE/ $TARGET/'
+                }
+            }
+        }
+        
+    }
+    
+    post {
+        success {
+            echo 'Finalizando com sucesso'
+        }
+    }
+}
