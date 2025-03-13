@@ -3,16 +3,22 @@ pipeline {
     
     stages {
         
-        stage('Gera lista de arquivos do SOURCE para TARGET') {
+        stage('Gera lista de arquivos diferentes entre SOURCE e TARGET') {
             steps {
-                sh 'rsync --dry-run -avz $SOURCE/ $TARGET/ | head --lines=-3 | tail --lines=+3 > files.txt'
+                retry(3) {
+				// rsync --dry-run para apenas listar os arquivos, sem realizar a copia
+                    sh 'rsync --dry-run -avz ./build/ $TARGET/ | head --lines=-3 | tail --lines=+3 > include.txt'
+                    echo 'Arquivos para copiar:'
+                    sh 'cat include.txt'
+                }
             }
         }
 
-        stage('Copia arquivos do SOURCE para TARGET') {
+        stage('Copia arquivos selecionados para TARGET') {
             steps {
                 retry(3) {
-                    sh 'rsync -av --include-from=files.txt --exclude="*" $SOURCE/ $TARGET/'
+                    // rsync --include=*/ necessário para incluir todos os diretorios (e subdiretorios) do source
+                    sh 'rsync -avz --include=*/ --include-from=include.txt --exclude=* ./build/ $TARGET/'
                 }
             }
         }
